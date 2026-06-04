@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import {ActivityIndicator,FlatList,Text,View,} from "react-native";
+import { ActivityIndicator, FlatList, Text, View, } from "react-native";
 
 import { useSportsStore } from "../store/sportsStore";
 

@@ -1,32 +1,40 @@
 import { create } from "zustand";
-import { fetchSports } from "../app";
+import { fetchSports } from "../services/api";
 
-export const useSportsStore = create((set) => ({
-  sports: [],
-  loading: false,
-  error: null,
+export const useSportsStore =
+  create((set) => ({
+    sports: [],
+    loading: false,
+    error: null,
 
-  loadSports: async () => {
-    try {
+    selectedCategory: "All",
+
+    setCategory: (category) =>
       set({
-        loading: true,
-        error: null,
-      });
+        selectedCategory:
+          category,
+      }),
 
-     await new Promise(resolve =>
-        setTimeout(resolve, 3000));
+    loadSports: async () => {
+      try {
+        set({
+          loading: true,
+          error: null,
+        });
 
-      const data = await fetchSports();
+        const data =
+          await fetchSports();
 
-      set({
-        sports: data,
-        loading: false,
-      });
-    } catch (_error) {
-      set({
-        error: "Failed to fetch sports",
-        loading: false,
-      });
-    }
-  },
-}));
+        set({
+          sports: data,
+          loading: false,
+        });
+      } catch (_error) {
+        set({
+          error:
+            "Failed to fetch sports",
+          loading: false,
+        });
+      }
+    },
+  }));
