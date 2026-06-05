@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Flame, Search, Trophy } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { FlatList, Image, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {FlatList,Image,RefreshControl,StyleSheet,Text,TextInput,TouchableOpacity,View} from 'react-native';
 import Loading from '../../components/Loading';
 import useSportsStore from '../../store/sportsStore';
 
@@ -23,16 +23,16 @@ export default function HomeScreen() {
     setRefreshing(false);
   };
 
-  const filteredSports = sports?.filter(sport => {
-    const matchesSearch = sport?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredSports = sports.filter(sport => {
+    const matchesSearch = sport.name?.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const categoryLower = sport?.category?.toLowerCase() || '';
+    const categoryLower = sport.category?.toLowerCase() || '';
     const matchesCategory = selectedCategory === 'All' || 
       (selectedCategory === 'Team' && (categoryLower === 'collectif' || categoryLower === 'team')) ||
       (selectedCategory === 'Individual' && (categoryLower === 'individuel' || categoryLower === 'individual'));
 
     return matchesSearch && matchesCategory;
-  }) || [];
+  });
 
   if (loading && !refreshing) {
     return <Loading />;
@@ -92,8 +92,7 @@ export default function HomeScreen() {
 
       <FlatList
         data={filteredSports}
-        // إصلاح مشكل keyExtractor بزيادة حماية الـ index
-        keyExtractor={(item, index) => item?.id?.toString() || index.toString()}
+        keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         refreshControl={
@@ -111,16 +110,16 @@ export default function HomeScreen() {
             onPress={() => router.push(`/sport/${item.id}`)}
             activeOpacity={0.95}
           >
-            {item?.image && <Image source={{ uri: item.image }} style={styles.cardImage} />}
+            <Image source={{ uri: item.image }} style={styles.cardImage} />
             <View style={styles.cardContent}>
               <View style={styles.cardHeaderRow}>
-                <Text style={styles.cardTitle}>{item?.name?.toUpperCase()}</Text>
+                <Text style={styles.cardTitle}>{item.name?.toUpperCase()}</Text>
                 <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{item?.category || 'Sport'}</Text>
+                  <Text style={styles.badgeText}>{item.category || 'Sport'}</Text>
                 </View>
               </View>
               <Text style={styles.cardDescription} numberOfLines={2}>
-                {item?.description || item?.shortDescription}
+                {item.description}
               </Text>
             </View>
           </TouchableOpacity>
@@ -130,13 +129,31 @@ export default function HomeScreen() {
   );
 }
 
-// الـ styles كيبقاو هما هما...
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FAFAFF', paddingTop: 60, paddingHorizontal: 20 },
-  header: { marginBottom: 20 },
-  logoContainer: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  headerTitle: { fontSize: 26, fontWeight: '800', color: '#1A1A24' },
-  headerSubtitle: { fontSize: 14, color: '#6C757D', marginTop: 4 },
+  container: {
+    flex: 1,
+    backgroundColor: '#FAFAFF', 
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+  header: {
+    marginBottom: 20,
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#1A1A24',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#6C757D',
+    marginTop: 4,
+  },
   searchSection: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -146,16 +163,46 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderColor: '#EAEAEA',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 2,
     marginBottom: 20,
   },
-  searchIcon: { marginRight: 10 },
-  searchInput: { flex: 1, fontSize: 15, color: '#1A1A24' },
-  categoryContainer: { flexDirection: 'row', gap: 10, marginBottom: 20 },
-  categoryButton: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, backgroundColor: '#EFF0F6' },
-  categoryButtonActive: { backgroundColor: '#1A1A3A' },
-  categoryButtonText: { fontSize: 14, fontWeight: '600', color: '#6C757D' },
-  categoryButtonTextActive: { color: '#FFF' },
-  listContent: { paddingBottom: 30 },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: '#1A1A24',
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 20,
+  },
+  categoryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#EFF0F6',
+  },
+  categoryButtonActive: {
+    backgroundColor: '#1A1A3A',
+  },
+  categoryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6C757D',
+  },
+  categoryButtonTextActive: {
+    color: '#FFF',
+  },
+  listContent: {
+    paddingBottom: 30,
+  },
   sportCard: {
     backgroundColor: '#FFF',
     borderRadius: 24,
@@ -167,17 +214,71 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 10,
   },
-  cardImage: { width: '100%', height: 160, resizeMode: 'cover' },
-  cardContent: { padding: 16 },
-  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  cardTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A24' },
-  badge: { backgroundColor: '#F3E8FF', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
-  badgeText: { color: '#4A148C', fontSize: 11, fontWeight: '700', textTransform: 'uppercase' },
-  cardDescription: { fontSize: 13, color: '#666', lineHeight: 18 },
-  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  errorText: { fontSize: 16, color: '#DC3545', textAlign: 'center', marginBottom: 16 },
-  retryButton: { backgroundColor: '#1A1A3A', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10 },
-  retryButtonText: { color: '#FFF', fontWeight: '600' },
-  emptyContainer: { alignItems: 'center', marginTop: 40, gap: 12 },
-  emptyText: { color: '#6C757D', fontSize: 14 },
+  cardImage: {
+    width: '100%',
+    height: 160,
+    resizeMode: 'cover',
+  },
+  cardContent: {
+    padding: 16,
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A24',
+  },
+  badge: {
+    backgroundColor: '#F3E8FF',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  badgeText: {
+    color: '#4A148C',
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  cardDescription: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#DC3545',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: '#1A1A3A',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  retryButtonText: {
+    color: '#FFF',
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 40,
+    gap: 12,
+  },
+  emptyText: {
+    color: '#6C757D',
+    fontSize: 14,
+  },
 });
