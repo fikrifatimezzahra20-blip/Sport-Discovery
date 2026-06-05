@@ -43,7 +43,16 @@ export default function FavoriteScreen() {
                     pressed && styles.heartCirclePressed,
                   ]}
                 >
-                  <Text style={styles.innerHeart}>💖</Text>
+                  {({ pressed }) => (
+                    <Image 
+                      source={require("../../assets/heart.icon/heart-28_.png")} 
+                      style={[
+                        styles.heartIcon,
+                        pressed && styles.heartIconPressed 
+                      ]}
+                      resizeMode="contain"
+                    />
+                  )}
                 </Pressable>
               </View>
             </ImageBackground>
@@ -113,7 +122,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFD1E8'
   },
-  innerHeart: { fontSize: 26 },
+  heartCirclePressed: {
+    backgroundColor: '#FFE6F0',
+  },
+  heartIcon: {
+    width: 28,
+    height: 28,
+    transform: [{ scale: 1 }],
+  },
+  heartIconPressed: {
+    transform: [{ scale: 1.2 }],
+    opacity: 0.8,
+  },
 
   emptyContainer: { marginTop: 80, alignItems: 'center', justifyContent: 'center' },
   sadSticker: { width: 280, height: 280, marginBottom: 20 }, 
