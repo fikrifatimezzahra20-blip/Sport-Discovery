@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Heart } from 'lucide-react-native';
+import { Heart, Home } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (

@@ -1,13 +1,12 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, Platform, ImageBackground, Image, Pressable } from 'react-native';
-import useSportsStore from '../../store/sportsStore';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FlatList, Image, ImageBackground, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import useSportsStore from '../../store/sportsStore';
 
 export default function FavoriteScreen() {
   const { favorites, toggleFavorite } = useSportsStore();
 
   return (
-
+    
     <LinearGradient
       colors={['#E6FF4F', '#FFFFFF']}
       locations={[0.09, 0.64]} 
