@@ -1,40 +1,42 @@
-import { create } from "zustand";
-import { fetchSports } from "../services/api";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchSports } from "../services/api"; 
 
-export const useSportsStore =
-  create((set) => ({
-    sports: [],
-    loading: false,
-    error: null,
+const useSportsStore = create(
+  persist(
+    (set, get) => ({
+      sports: [],
+      favorites: [], 
+      loading: false,
 
-    selectedCategory: "All",
+      loadSports: async () => {
+        set({ loading: true });
+        try {
+          const data = await fetchSports();
+          set({ sports: data, loading: false });
+        } catch (error) {
+          console.log("Store Load Sports Error:", error);
+          set({ loading: false });
+        }
+      },
 
-    setCategory: (category) =>
-      set({
-        selectedCategory:
-          category,
-      }),
+      toggleFavorite: (sport) => {
+        const { favorites } = get();
+        const isExist = favorites.some((fav) => String(fav.id) === String(sport.id));
 
-    loadSports: async () => {
-      try {
-        set({
-          loading: true,
-          error: null,
-        });
+        if (isExist) {
+          set({ favorites: favorites.filter((fav) => String(fav.id) !== String(sport.id)) });
+        } else {
+          set({ favorites: [...favorites, sport] });
+        }
+      },
+    }),
+    {
+      name: 'sports-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
 
-        const data =
-          await fetchSports();
-
-        set({
-          sports: data,
-          loading: false,
-        });
-      } catch (_error) {
-        set({
-          error:
-            "Failed to fetch sports",
-          loading: false,
-        });
-      }
-    },
-  }));
+export default useSportsStore;

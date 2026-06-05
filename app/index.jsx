@@ -188,7 +188,7 @@
 // -----------------------I am the person in charge of the front end  Person A-----------------------------
 
 import { Search } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   RefreshControl,
